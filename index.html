@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>누리호 발사 시뮬레이터</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 누리호 발사 시뮬레이터</h1>
+            <p class="subtitle">정확한 타이밍에 버튼을 눌러 누리호를 궤도에 올려보세요!</p>
+        </header>
+        
+        
+        <!-- 게임오버 화면 -->
+        <div class="gameover-overlay" id="gameover-overlay">
+            <div class="gameover-content">
+                <h2>게임 오버</h2>
+                <p id="gameover-reason"></p>
+                <div class="gameover-buttons">
+                    <button class="primary-btn" id="restart-btn">다시 시작</button>
+                    <button class="secondary-btn" id="back-to-menu-btn">대기화면으로 나가기</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 성공 화면 -->
+        <div class="success-overlay" id="success-overlay">
+            <div class="success-content">
+                <h2>대한민국 누리호 발사 성공!</h2>
+                <p>모든 미션을 완수했습니다.</p>
+                <button class="primary-btn" id="success-menu-btn">대기화면으로</button>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <!-- 메인 게임 화면 -->
+            <div class="main-game">
+                <!-- 로켓 디스플레이 -->
+                <div class="rocket-display" id="rocket-display">
+                    <!-- 프로그래스바 (디스플레이 내부 좌측) -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-step" id="progress-step1">
+                                <div class="step-indicator"></div>
+                                <div class="step-label">1단 분리</div>
+                                <div class="step-altitude">60km</div>
+                            </div>
+                            <div class="progress-step" id="progress-step2">
+                                <div class="step-indicator"></div>
+                                <div class="step-label">페어링 분리</div>
+                                <div class="step-altitude">120km</div>
+                            </div>
+                            <div class="progress-step" id="progress-step3">
+                                <div class="step-indicator"></div>
+                                <div class="step-label">2단 분리</div>
+                                <div class="step-altitude">200km</div>
+                            </div>
+                            <div class="progress-step" id="progress-step4">
+                                <div class="step-indicator"></div>
+                                <div class="step-label">페이로드 분리</div>
+                                <div class="step-altitude">700km</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 카운트다운 -->
+                    <div class="countdown-overlay" id="countdown-overlay">
+                        <div class="countdown-display" id="countdown-display">10</div>
+                    </div>
+                    <!-- 배경 애니메이션 컨테이너 -->
+                    <div class="background-container" id="background-container"></div>
+                    <div class="ignition-effect" id="ignition-effect"></div>
+                    <div class="rocket" id="rocket">
+                        <img src="nuri-rocket-extracted.svg" alt="누리호" class="rocket-image" id="rocket-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="rocket-fallback" style="display:none;">🚀</div>
+                    </div>
+                    <div class="trajectory" id="trajectory"></div>
+                    
+                    <!-- 텔레메트리 (디스플레이 내부) -->
+                    <div class="telemetry">
+                        <div class="metric">
+                            <label>고도</label>
+                            <span id="altitude">0 km</span>
+                        </div>
+                        <div class="metric">
+                            <label>속도</label>
+                            <span id="velocity">0 m/s</span>
+                        </div>
+                        <div class="metric">
+                            <label>시간</label>
+                            <span id="time">00:00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 실시간 액션 힌트 -->
+                    <div class="action-hint" id="action-hint">단계 준비 시 안내가 표시됩니다</div>
+                    
+                    <!-- 단계 정보 (디스플레이 내부) -->
+                    <div class="stages">
+                        <div class="stage" id="stage1">
+                            <h3>1단 분리</h3>
+                            <p class="target">목표: 고도 60km, 속도 Mach 4.5 (약 1,530 m/s)</p>
+                            <div class="status" id="status1">대기 중...</div>
+                        </div>
+                        
+                        <div class="stage" id="stage2">
+                            <h3>페어링 분리</h3>
+                            <p class="target">목표: 고도 120km</p>
+                            <div class="status" id="status2">대기 중...</div>
+                        </div>
+                        
+                        <div class="stage" id="stage3">
+                            <h3>2단 분리</h3>
+                            <p class="target">목표: 고도 200km</p>
+                            <div class="status" id="status3">대기 중...</div>
+                        </div>
+                        
+                        <div class="stage" id="stage4">
+                            <h3>페이로드 분리</h3>
+                            <p class="target">목표: 고도 700km</p>
+                            <div class="status" id="status4">대기 중...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 조작 안내 -->
+                    <div class="controls-hint-display">
+                        <div>A/D 또는 ←/→ (회피) | 스페이스바 (단계 실행)</div>
+                    </div>
+                </div>
+                
+                <!-- 컨트롤 -->
+                <div class="controls" id="controls">
+                    <button id="start-btn" class="primary-btn">발사 시작</button>
+                    <button id="reset-btn" class="secondary-btn">재시작</button>
+                </div>
+                
+                <!-- 점수 패널 -->
+                <div class="score-panel">
+                    <h3>점수</h3>
+                    <div class="score-display">
+                        <div>정확도: <span id="accuracy">0%</span></div>
+                        <div>궤도 도달 가능성: <span id="success-rate">0%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
+
